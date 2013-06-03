@@ -7,7 +7,7 @@
 
 Name:            xorg-x11-drv-nvidia-304xx
 Version:         304.88
-Release:         1%{?dist}
+Release:         2%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -99,8 +99,8 @@ Requires:        %{name}-libs%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:        %{name}-libs-%{_target_cpu} = %{?epoch}:%{version}-%{release}
 %endif
 #Introduced in F17 when 304xx was splitted
-Obsoletes:       xorg-x11-drv-nvidia-devel < 1:304.1000
-Provides:        xorg-x11-drv-nvidia-devel = 1:%{version}-101
+Obsoletes:       xorg-x11-drv-nvidia-devel < 1:%{version}-1000
+Provides:        xorg-x11-drv-nvidia-devel = 1:%{version}-1001
 
 %description devel
 This package provides the development files of the %{name} package,
@@ -113,8 +113,8 @@ Requires:        %{name} = %{?epoch}:%{version}-%{release}
 Requires:        libvdpau%{_isa} >= 0.5
 Provides:        %{name}-libs-%{_target_cpu} = %{?epoch}:%{version}-%{release}
 #Introduced in F17 when 304xx was splitted
-Obsoletes:       xorg-x11-drv-nvidia-libs < 1:304.1000
-Provides:        xorg-x11-drv-nvidia-libs = 1:%{version}-101
+Obsoletes:       xorg-x11-drv-nvidia-libs < 1:%{version}-1000
+Provides:        xorg-x11-drv-nvidia-libs = 1:%{version}-1001
 
 %description libs
 This package provides the shared libraries for %{name}.
@@ -246,20 +246,39 @@ rm -rf $RPM_BUILD_ROOT
 %post
 if [ "$1" -eq "1" ]; then
   ISGRUB1=""
-  GFXPAYLOAD="gfxpayload="
   if [[ -f /boot/grub/grub.conf && ! -f /boot/grub2/grub2.cfg ]] ; then
       ISGRUB1="--grub"
-      GFXPAYLOAD=""
   fi
   if [ -x /sbin/grubby ] ; then
     KERNELS=`/sbin/grubby --default-kernel`
     DIST=`rpm -E %%{?dist}`
     ARCH=`uname -m`
-    [ -z $KERNELS ] && KERNELS=`ls /boot/vmlinuz-*${DIST}.${ARCH}`
+    [ -z $KERNELS ] && KERNELS=`ls /boot/vmlinuz-*${DIST}.${ARCH}{,.PAE}`
     for kernel in ${KERNELS} ; do
       /sbin/grubby $ISGRUB1 \
         --update-kernel=${kernel} \
-        --args="nouveau.modeset=0 rd.driver.blacklist=nouveau video=vesa:off ${GFXPAYLOAD}vga=normal" \
+        --args="nouveau.modeset=0 rd.driver.blacklist=nouveau video=vesa:off vga=normal" \
+         &>/dev/null
+    done
+  fi
+fi || :
+
+
+%triggerpostun -- xorg-x11-drv-nvidia < 1:%{version}-1000
+if [ "$1" -eq "1" ]; then
+  ISGRUB1=""
+  if [[ -f /boot/grub/grub.conf && ! -f /boot/grub2/grub2.cfg ]] ; then
+      ISGRUB1="--grub"
+  fi
+  if [ -x /sbin/grubby ] ; then
+    KERNELS=`/sbin/grubby --default-kernel`
+    DIST=`rpm -E %%{?dist}`
+    ARCH=`uname -m`
+    [ -z $KERNELS ] && KERNELS=`ls /boot/vmlinuz-*${DIST}.${ARCH}{,.PAE}`
+    for kernel in ${KERNELS} ; do
+      /sbin/grubby $ISGRUB1 \
+        --update-kernel=${kernel} \
+        --args="nouveau.modeset=0 rd.driver.blacklist=nouveau video=vesa:off vga=normal" \
          &>/dev/null
     done
   fi
@@ -349,6 +368,11 @@ fi ||:
 
 
 %changelog
+* Sun Jun 02 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-2
+- Use triggerpostun to re-introduce boot options on rename
+- Avoid to use gfxpayload
+- Fix missing grubby --default-kernel on PAE kernel
+
 * Sun May 19 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-1
 - Switch to 304xx serie
 
