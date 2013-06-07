@@ -7,7 +7,7 @@
 
 Name:            xorg-x11-drv-nvidia-304xx
 Version:         304.88
-Release:         2%{?dist}
+Release:         3%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -248,6 +248,10 @@ if [ "$1" -eq "1" ]; then
   ISGRUB1=""
   if [[ -f /boot/grub/grub.conf && ! -f /boot/grub2/grub2.cfg ]] ; then
       ISGRUB1="--grub"
+      GFXPAYLOAD="vga=normal"
+  else
+      echo "GRUB_GFXPAYLOAD_LINUX=text" >> %{_sysconfdir}/default/grub
+      grub2-mkconfig -o /boot/grub2/grub.cfg
   fi
   if [ -x /sbin/grubby ] ; then
     KERNELS=`/sbin/grubby --default-kernel`
@@ -257,7 +261,7 @@ if [ "$1" -eq "1" ]; then
     for kernel in ${KERNELS} ; do
       /sbin/grubby $ISGRUB1 \
         --update-kernel=${kernel} \
-        --args="nouveau.modeset=0 rd.driver.blacklist=nouveau video=vesa:off vga=normal" \
+        --args="nouveau.modeset=0 rd.driver.blacklist=nouveau video=vesa:off $GFXPAYLOAD" \
          &>/dev/null
     done
   fi
@@ -269,6 +273,10 @@ if [ "$1" -eq "1" ]; then
   ISGRUB1=""
   if [[ -f /boot/grub/grub.conf && ! -f /boot/grub2/grub2.cfg ]] ; then
       ISGRUB1="--grub"
+      GFXPAYLOAD="vga=normal"
+  else
+      echo "GRUB_GFXPAYLOAD_LINUX=text" >> %{_sysconfdir}/default/grub
+      grub2-mkconfig -o /boot/grub2/grub.cfg
   fi
   if [ -x /sbin/grubby ] ; then
     KERNELS=`/sbin/grubby --default-kernel`
@@ -278,7 +286,7 @@ if [ "$1" -eq "1" ]; then
     for kernel in ${KERNELS} ; do
       /sbin/grubby $ISGRUB1 \
         --update-kernel=${kernel} \
-        --args="nouveau.modeset=0 rd.driver.blacklist=nouveau video=vesa:off vga=normal" \
+        --args="nouveau.modeset=0 rd.driver.blacklist=nouveau video=vesa:off $GFXPAYLOAD" \
          &>/dev/null
     done
   fi
@@ -368,6 +376,9 @@ fi ||:
 
 
 %changelog
+* Fri Jun 07 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-3
+- Add GRUB_GFXPAYLOAD_LINUX=text by default
+
 * Sun Jun 02 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-2
 - Use triggerpostun to re-introduce boot options on rename
 - Avoid to use gfxpayload
