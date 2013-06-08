@@ -246,7 +246,7 @@ rm -rf $RPM_BUILD_ROOT
 %post
 if [ "$1" -eq "1" ]; then
   ISGRUB1=""
-  if [[ -f /boot/grub/grub.conf && ! -f /boot/grub2/grub2.cfg ]] ; then
+  if [[ -f /boot/grub/grub.conf && ! -f /boot/grub2/grub.cfg ]] ; then
       ISGRUB1="--grub"
       GFXPAYLOAD="vga=normal"
   else
@@ -271,7 +271,7 @@ fi || :
 %triggerpostun -- xorg-x11-drv-nvidia < 1:%{version}-1000
 if [ "$1" -eq "1" ]; then
   ISGRUB1=""
-  if [[ -f /boot/grub/grub.conf && ! -f /boot/grub2/grub2.cfg ]] ; then
+  if [[ -f /boot/grub/grub.conf && ! -f /boot/grub2/grub.cfg ]] ; then
       ISGRUB1="--grub"
       GFXPAYLOAD="vga=normal"
   else
@@ -301,11 +301,13 @@ fi || :
 %preun
 if [ "$1" -eq "0" ]; then
   ISGRUB1=""
-  if [[ -f /boot/grub/grub.conf && ! -f /boot/grub2/grub2.cfg ]] ; then
+  if [[ -f /boot/grub/grub.conf && ! -f /boot/grub2/grub.cfg ]] ; then
       ISGRUB1="--grub"
   fi
   if [ -x /sbin/grubby ] ; then
-    KERNELS=`ls /boot/vmlinuz-*%{?dist}.$(uname -m)*`
+    DIST=`rpm -E %%{?dist}`
+    ARCH=`uname -m`
+    KERNELS=`ls /boot/vmlinuz-*${DIST}.${ARCH}{,.PAE}`
     for kernel in ${KERNELS} ; do
       /sbin/grubby $ISGRUB1 \
         --update-kernel=${kernel} \
@@ -378,6 +380,8 @@ fi ||:
 %changelog
 * Fri Jun 07 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-3
 - Add GRUB_GFXPAYLOAD_LINUX=text by default
+- Fix PAE kvarriant on uninstall
+- Fix grub.cfg path for grub2
 
 * Sun Jun 02 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-2
 - Use triggerpostun to re-introduce boot options on rename
