@@ -7,7 +7,7 @@
 
 Name:            xorg-x11-drv-nvidia-304xx
 Version:         304.88
-Release:         3%{?dist}
+Release:         4%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -33,12 +33,11 @@ Requires:  %{_nvidia_serie}-settings
 Requires:        %{_nvidia_serie}-kmod >= %{version}
 
 # Needed in all nvidia or fglrx driver packages
-BuildRequires:   prelink
 Requires:        which
 %if 0%{?fedora} > 10 || 0%{?rhel} > 5
 Requires:        %{name}-libs%{_isa} = %{?epoch}:%{version}-%{release}
 %else
-Requires:        %{name}-libs-%{_target_cpu} = %{version}-%{release}
+Requires:        %{name}-libs-%{_target_cpu} = %{?epoch}:%{version}-%{release}
 %endif
 
 Requires(post):  ldconfig
@@ -61,6 +60,9 @@ Conflicts:       xorg-x11-drv-catalyst
 Conflicts:       xorg-x11-drv-catalyst-legacy
 
 
+#Support for cuda
+#Don't put an epoch here
+Provides:        cuda-driver = %{version}
 
 %{?filter_setup:
 %filter_from_provides /^libnvidia/d;
@@ -180,7 +182,9 @@ install -m 0755 -d $RPM_BUILD_ROOT%{_nvidia_xorgdir}
 rm -f $RPM_BUILD_ROOT%{_nvidia_libdir}/lib{nvidia-wfb,glx,vdpau*}.so.%{version}
 
 # Finish up the special case libs
+%if 0%{?rhel} == 5
 install -p -m 0755 libnvidia-wfb.so.%{version} $RPM_BUILD_ROOT%{_nvidia_xorgdir}
+%endif
 install -p -m 0755 libglx.so.%{version}        $RPM_BUILD_ROOT%{_nvidia_xorgdir}
 install -p -m 0755 nvidia_drv.so               $RPM_BUILD_ROOT%{_libdir}/xorg/modules/drivers/nvidia_drv.so
 install -p -m 0755 libvdpau*.so.%{version}     $RPM_BUILD_ROOT%{_libdir}/vdpau/
@@ -208,23 +212,12 @@ ln -s libOpenCL.so.1.0.0 $RPM_BUILD_ROOT%{_nvidia_libdir}/libOpenCL.so.1
 ln -s libOpenCL.so.1.0.0 $RPM_BUILD_ROOT%{_nvidia_libdir}/libOpenCL.so
 
 
-# X configuration script
-#install -D -p -m 0755 %{SOURCE10} $RPM_BUILD_ROOT%{_sbindir}/nvidia-config-display
-
 # Install nvidia icon
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/pixmaps
 install -pm 0644 nvidia-settings.png $RPM_BUILD_ROOT%{_datadir}/pixmaps
 
 # Remove duplicate install
 rm $RPM_BUILD_ROOT%{_nvidia_libdir}/libnvidia-{cfg,tls}.so
-
-# Remove execstack needs on F-12 and laters
-%if 0%{?fedora} >= 12 || 0%{?rhel} > 5
-find $RPM_BUILD_ROOT%{_libdir} -name '*.so.*' -type f -exec execstack -c {} ';'
-%ifarch x86_64
-execstack -c $RPM_BUILD_ROOT%{_bindir}/nvidia-smi
-%endif
-%endif
 
 #Install static driver dependant configuration files
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/X11/xorg.conf.d
@@ -311,7 +304,9 @@ if [ "$1" -eq "0" ]; then
     for kernel in ${KERNELS} ; do
       /sbin/grubby $ISGRUB1 \
         --update-kernel=${kernel} \
-        --remove-args="nouveau.modeset=0 rdblacklist=nouveau rd.driver.blacklist=nouveau nomodeset video=vesa:off gfxpayload=vga=normal vga=normal" &>/dev/null
+        --remove-args="nouveau.modeset=0 rdblacklist=nouveau \
+            rd.driver.blacklist=nouveau nomodeset video=vesa:off \
+            gfxpayload=vga=normal vga=normal" &>/dev/null
     done
   fi
   #Backup and disable previously used xorg.conf
@@ -337,7 +332,6 @@ fi ||:
 %{_bindir}/nvidia-smi
 %{_bindir}/nvidia-cuda-proxy-control
 %{_bindir}/nvidia-cuda-proxy-server
-#{_sbindir}/nvidia-config-display
 # Xorg libs that do not need to be multilib
 %dir %{_nvidia_xorgdir}
 %{_nvidia_xorgdir}/*.so*
@@ -378,6 +372,12 @@ fi ||:
 
 
 %changelog
+* Sat Jun 08 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-4
+- Few resync with devel
+- Disable execstack fix
+- Add support for cuda-driver
+- Don't redistribute libnvidia-wfb.so (only needed on EL5).
+
 * Fri Jun 07 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-3
 - Add GRUB_GFXPAYLOAD_LINUX=text by default
 - Fix PAE kvarriant on uninstall
