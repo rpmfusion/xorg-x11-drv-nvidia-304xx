@@ -7,7 +7,7 @@
 
 Name:            xorg-x11-drv-nvidia-304xx
 Version:         304.88
-Release:         4%{?dist}
+Release:         5%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -250,7 +250,7 @@ if [ "$1" -eq "1" ]; then
     KERNELS=`/sbin/grubby --default-kernel`
     DIST=`rpm -E %%{?dist}`
     ARCH=`uname -m`
-    [ -z $KERNELS ] && KERNELS=`ls /boot/vmlinuz-*${DIST}.${ARCH}{,.PAE}`
+    [ -z $KERNELS ] && KERNELS=`ls /boot/vmlinuz-*${DIST}.${ARCH}*`
     for kernel in ${KERNELS} ; do
       /sbin/grubby $ISGRUB1 \
         --update-kernel=${kernel} \
@@ -275,7 +275,7 @@ if [ "$1" -eq "1" ]; then
     KERNELS=`/sbin/grubby --default-kernel`
     DIST=`rpm -E %%{?dist}`
     ARCH=`uname -m`
-    [ -z $KERNELS ] && KERNELS=`ls /boot/vmlinuz-*${DIST}.${ARCH}{,.PAE}`
+    [ -z $KERNELS ] && KERNELS=`ls /boot/vmlinuz-*${DIST}.${ARCH}*`
     for kernel in ${KERNELS} ; do
       /sbin/grubby $ISGRUB1 \
         --update-kernel=${kernel} \
@@ -300,7 +300,7 @@ if [ "$1" -eq "0" ]; then
   if [ -x /sbin/grubby ] ; then
     DIST=`rpm -E %%{?dist}`
     ARCH=`uname -m`
-    KERNELS=`ls /boot/vmlinuz-*${DIST}.${ARCH}{,.PAE}`
+    KERNELS=`ls /boot/vmlinuz-*${DIST}.${ARCH}*`
     for kernel in ${KERNELS} ; do
       /sbin/grubby $ISGRUB1 \
         --update-kernel=${kernel} \
@@ -372,6 +372,9 @@ fi ||:
 
 
 %changelog
+* Wed Jun 12 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-5
+- Relax kernel flavor cases
+
 * Sat Jun 08 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-4
 - Few resync with devel
 - Disable execstack fix
