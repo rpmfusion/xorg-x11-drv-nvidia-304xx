@@ -7,7 +7,7 @@
 
 Name:            xorg-x11-drv-nvidia-304xx
 Version:         304.88
-Release:         7%{?dist}
+Release:         8%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -289,7 +289,7 @@ fi || :
 
 %posttrans
  [ -f %{_sysconfdir}/X11/xorg.conf.xorg-x11-drv-nvidia_uninstalled ] && \
-    mv %{_sysconfdir}/X11/xorg.conf.%{name}_uninstalled %{_sysconfdir}/X11/xorg.conf
+    mv %{_sysconfdir}/X11/xorg.conf.xorg-x11-drv-nvidia_uninstalled %{_sysconfdir}/X11/xorg.conf
  [ -f %{_sysconfdir}/X11/xorg.conf ] || \
    cp -p %{_sysconfdir}/X11/nvidia-xorg.conf %{_sysconfdir}/X11/xorg.conf || :
 
@@ -374,7 +374,7 @@ fi ||:
 
 
 %changelog
-* Sun Jun 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-7
+* Sun Jun 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-8
 - Restore the previous xorg.conf in posttrans
 
 * Wed Jun 12 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-5
