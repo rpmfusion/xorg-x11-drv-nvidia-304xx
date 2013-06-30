@@ -289,7 +289,7 @@ fi || :
 
 %posttrans
  [ -f %{_sysconfdir}/X11/xorg.conf.xorg-x11-drv-nvidia_uninstalled ] && \
-    cp -p %{_sysconfdir}/X11/xorg.conf.%{name}_uninstalled %{_sysconfdir}/X11/xorg.conf
+    mv %{_sysconfdir}/X11/xorg.conf.%{name}_uninstalled %{_sysconfdir}/X11/xorg.conf
  [ -f %{_sysconfdir}/X11/xorg.conf ] || \
    cp -p %{_sysconfdir}/X11/nvidia-xorg.conf %{_sysconfdir}/X11/xorg.conf || :
 
