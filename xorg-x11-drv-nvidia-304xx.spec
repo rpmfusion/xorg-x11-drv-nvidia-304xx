@@ -7,7 +7,7 @@
 
 Name:            xorg-x11-drv-nvidia-304xx
 Version:         304.88
-Release:         6%{?dist}
+Release:         7%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -283,14 +283,13 @@ if [ "$1" -eq "1" ]; then
          &>/dev/null
     done
   fi
- [ -f %{_sysconfdir}/X11/xorg.conf.xorg-x11-drv-nvidia_uninstalled ] && \
-    cp -p %{_sysconfdir}/X11/xorg.conf.%{name}_uninstalled %{_sysconfdir}/X11/xorg.conf
-
 fi || :
 
 %post libs -p /sbin/ldconfig
 
 %posttrans
+ [ -f %{_sysconfdir}/X11/xorg.conf.xorg-x11-drv-nvidia_uninstalled ] && \
+    cp -p %{_sysconfdir}/X11/xorg.conf.%{name}_uninstalled %{_sysconfdir}/X11/xorg.conf
  [ -f %{_sysconfdir}/X11/xorg.conf ] || \
    cp -p %{_sysconfdir}/X11/nvidia-xorg.conf %{_sysconfdir}/X11/xorg.conf || :
 
@@ -375,8 +374,8 @@ fi ||:
 
 
 %changelog
-* Fri Jun 28 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-6
-- Restore configuration used before rename
+* Sun Jun 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-7
+- Restore the previous xorg.conf in posttrans
 
 * Wed Jun 12 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-5
 - Relax kernel flavor cases
