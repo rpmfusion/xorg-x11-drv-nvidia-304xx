@@ -7,7 +7,7 @@
 
 Name:            xorg-x11-drv-nvidia-304xx
 Version:         304.88
-Release:         8%{?dist}
+Release:         9%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -20,6 +20,7 @@ Source3:         nvidia-xorg.conf
 Source6:         blacklist-nouveau.conf
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires:   desktop-file-utils
 %if 0%{?fedora} > 11 || 0%{?rhel} > 5
 ExclusiveArch: i686 x86_64
 %else 0%{?fedora} == 11
@@ -27,17 +28,19 @@ ExclusiveArch: i586 x86_64
 %else
 ExclusiveArch: i386 x86_64
 %endif
-Requires:  nvidia-xconfig
-Requires:  %{_nvidia_serie}-settings
+Obsoletes:  nvidia-xconfig < 1.0-30
+Provides:  nvidia-xconfig = %{version}-%{release}
+Obsoletes:  nvidia-settings < 1.0-34
+Provides:  nvidia-settings = %{version}-%{release}
+Obsoletes:  nvidia-settings-desktop < 1.0-34
+Provides:  nvidia-settings-desktop = %{version}-%{release}
 
-Requires:        %{_nvidia_serie}-kmod >= %{version}
-
-# Needed in all nvidia or fglrx driver packages
 Requires:        which
+Requires:        %{_nvidia_serie}-kmod >= %{version}
 %if 0%{?fedora} > 10 || 0%{?rhel} > 5
-Requires:        %{name}-libs%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:        %{name}-libs%{_isa} = %{version}-%{release}
 %else
-Requires:        %{name}-libs-%{_target_cpu} = %{?epoch}:%{version}-%{release}
+Requires:        %{name}-libs-%{_target_cpu} = %{version}-%{release}
 %endif
 
 Requires(post):  ldconfig
@@ -50,8 +53,8 @@ Obsoletes:       nvidia-kmod < 1:%{version}-1000
 Obsoletes:       nvidia-kmod-common < 1:%{version}-1000
 Provides:        nvidia-kmod-common = 1:%{version}-1001
 
-Obsoletes:       %{_nvidia_serie}-kmod < %{?epoch}:%{version}
-Provides:        %{_nvidia_serie}-kmod-common = %{?epoch}:%{version}
+Obsoletes:       %{_nvidia_serie}-kmod < %{version}
+Provides:        %{_nvidia_serie}-kmod-common = %{version}
 Conflicts:       xorg-x11-drv-nvidia-latest
 Conflicts:       xorg-x11-drv-nvidia-beta
 Conflicts:       xorg-x11-drv-nvidia-96xx
@@ -96,9 +99,9 @@ http://rpmfusion.org/Howto/nVidia
 Summary:         Development files for %{name}
 Group:           Development/Libraries
 %if 0%{?fedora} > 10 || 0%{?rhel} > 5
-Requires:        %{name}-libs%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:        %{name}-libs%{_isa} = %{version}-%{release}
 %else
-Requires:        %{name}-libs-%{_target_cpu} = %{?epoch}:%{version}-%{release}
+Requires:        %{name}-libs-%{_target_cpu} = %{version}-%{release}
 %endif
 #Introduced in F17 when 304xx was splitted
 Obsoletes:       xorg-x11-drv-nvidia-devel < 1:%{version}-1000
@@ -111,9 +114,9 @@ such as OpenGL headers.
 %package libs
 Summary:         Libraries for %{name}
 Group:           User Interface/X Hardware Support
-Requires:        %{name} = %{?epoch}:%{version}-%{release}
+Requires:        %{name} = %{version}-%{release}
 Requires:        libvdpau%{_isa} >= 0.5
-Provides:        %{name}-libs-%{_target_cpu} = %{?epoch}:%{version}-%{release}
+Provides:        %{name}-libs-%{_target_cpu} = %{version}-%{release}
 #Introduced in F17 when 304xx was splitted
 Obsoletes:       xorg-x11-drv-nvidia-libs < 1:%{version}-1000
 Provides:        xorg-x11-drv-nvidia-libs = 1:%{version}-1001
@@ -191,7 +194,8 @@ install -p -m 0755 libvdpau*.so.%{version}     $RPM_BUILD_ROOT%{_libdir}/vdpau/
 install -p -m 0644 libXvMCNVIDIA.a             $RPM_BUILD_ROOT%{_nvidia_libdir}/
 
 # Install binaries
-install -p -m 0755 nvidia-{bug-report.sh,smi,cuda-proxy-control,cuda-proxy-server} $RPM_BUILD_ROOT%{_bindir}
+install -p -m 0755 nvidia-{bug-report.sh,smi,cuda-proxy-control,cuda-proxy-server,xconfig,settings} \
+  $RPM_BUILD_ROOT%{_bindir}
 
 # Install headers
 install -m 0755 -d $RPM_BUILD_ROOT%{_includedir}/nvidia/GL/
@@ -226,6 +230,13 @@ sed -i -e 's|@LIBDIR@|%{_libdir}|g' $RPM_BUILD_ROOT%{_sysconfdir}/X11/xorg.conf.
 sed -i -e 's|nvidia|%{_nvidia_serie}|g' $RPM_BUILD_ROOT%{_sysconfdir}/X11/xorg.conf.d/00-nvidia.conf
 touch -r %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/X11/xorg.conf.d/00-nvidia.conf
 install -pm 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/X11/
+
+# Desktop entry for nvidia-settings
+desktop-file-install --vendor "" \
+    --dir $RPM_BUILD_ROOT%{_datadir}/applications/ \
+    --set-icon=nvidia-settings \
+    --set-key=Exec --set-value=nvidia-settings \
+    nvidia-settings.desktop
 
 #Workaround for self made xorg.conf using a Files section.
 %if 0%{?fedora} < 20
@@ -334,6 +345,8 @@ fi ||:
 %{_bindir}/nvidia-smi
 %{_bindir}/nvidia-cuda-proxy-control
 %{_bindir}/nvidia-cuda-proxy-server
+%{_bindir}/nvidia-settings
+%{_bindir}/nvidia-xconfig
 # Xorg libs that do not need to be multilib
 %dir %{_nvidia_xorgdir}
 %{_nvidia_xorgdir}/*.so*
@@ -342,6 +355,7 @@ fi ||:
 %{_libdir}/xorg/modules/%{_nvidia_serie}-%{version}
 %endif
 #/no_multilib
+%{_datadir}/applications/*nvidia-settings.desktop
 %{_datadir}/pixmaps/*.png
 %{_mandir}/man1/nvidia-smi.*
 %{_mandir}/man1/nvidia-cuda-proxy-control.1.*
@@ -374,6 +388,10 @@ fi ||:
 
 
 %changelog
+* Sat Jul 13 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-9
+- Remove empty epoch - may solve rfbz#2874
+- Restore nvidia-settings and nvidia-xconfig - rfbz#2852
+
 * Sun Jun 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-8
 - Restore the previous xorg.conf in posttrans
 
