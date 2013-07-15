@@ -7,7 +7,7 @@
 
 Name:            xorg-x11-drv-nvidia-304xx
 Version:         304.88
-Release:         9%{?dist}
+Release:         10%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -29,11 +29,11 @@ ExclusiveArch: i586 x86_64
 ExclusiveArch: i386 x86_64
 %endif
 Obsoletes:  nvidia-xconfig < 1.0-30
-Provides:  nvidia-xconfig = %{version}-%{release}
+#Provides:  nvidia-xconfig = %{version}-%{release}
 Obsoletes:  nvidia-settings < 1.0-34
-Provides:  nvidia-settings = %{version}-%{release}
+#Provides:  nvidia-settings = %{version}-%{release}
 Obsoletes:  nvidia-settings-desktop < 1.0-34
-Provides:  nvidia-settings-desktop = %{version}-%{release}
+#Provides:  nvidia-settings-desktop = %{version}-%{release}
 
 Requires:        which
 Requires:        %{_nvidia_serie}-kmod >= %{version}
@@ -388,6 +388,9 @@ fi ||:
 
 
 %changelog
+* Mon Jul 15 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-10
+- Avoid a Virtual Provides for legacy series
+
 * Sat Jul 13 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-9
 - Remove empty epoch - may solve rfbz#2874
 - Restore nvidia-settings and nvidia-xconfig - rfbz#2852
