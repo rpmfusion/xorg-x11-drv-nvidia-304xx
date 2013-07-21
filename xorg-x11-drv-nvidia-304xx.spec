@@ -7,7 +7,7 @@
 
 Name:            xorg-x11-drv-nvidia-304xx
 Version:         304.88
-Release:         11%{?dist}
+Release:         12%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -28,11 +28,11 @@ ExclusiveArch: i586 x86_64
 %else
 ExclusiveArch: i386 x86_64
 %endif
-Obsoletes:  nvidia-xconfig < 1.0-30
+#Obsoletes:  nvidia-xconfig < 1.0-30
 #Provides:  nvidia-xconfig = %{version}-%{release}
-Obsoletes:  nvidia-settings < 1.0-34
+#Obsoletes:  nvidia-settings < 1.0-34
 #Provides:  nvidia-settings = %{version}-%{release}
-Obsoletes:  nvidia-settings-desktop < 1.0-34
+#Obsoletes:  nvidia-settings-desktop < 1.0-34
 #Provides:  nvidia-settings-desktop = %{version}-%{release}
 
 Requires:        which
@@ -388,6 +388,9 @@ fi ||:
 
 
 %changelog
+* Sun Jul 21 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-12
+- Disable Obsoletes/Provides of nvidia tools until rhbz#985944
+
 * Mon Jul 15 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-11
 - Fix typo with libGLcore filter
 - Avoid a Virtual Provides for legacy series
