@@ -6,8 +6,8 @@
 %global	       __strip /bin/true
 
 Name:            xorg-x11-drv-nvidia-304xx
-Version:         304.88
-Release:         12%{?dist}
+Version:         304.108
+Release:         1%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -388,6 +388,9 @@ fi ||:
 
 
 %changelog
+* Tue Aug 13 2013 Leigh Scott <leigh123linux@googlemail.com> - 304.108-1
+- Update to 304.108
+
 * Sun Jul 21 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.88-12
 - Disable Obsoletes/Provides of nvidia tools until rhbz#985944
 
@@ -715,7 +718,7 @@ fi ||:
 * Thu Jan  8 2009 kwizart < kwizart at gmail.com > - 180.22-1
 - Update to 180.22 (stable)
 
-* Sat Dec 28 2008 kwizart < kwizart at gmail.com > - 180.18-1
+* Sat Dec 27 2008 kwizart < kwizart at gmail.com > - 180.18-1
 - Update to 180.18 (beta)
 
 * Wed Dec 17 2008 kwizart < kwizart at gmail.com > - 180.16-1
@@ -781,7 +784,7 @@ fi ||:
 - Update to 173.08 (beta) - Fedora 9 experimental support
   See: http://www.nvnews.net/vbulletin/showthread.php?t=111460
 
-* Fri Mar  8 2008 kwizart < kwizart at gmail.com > - 171.06-1
+* Fri Mar  7 2008 kwizart < kwizart at gmail.com > - 171.06-1
 - Update to 171.06 (beta)
 
 * Wed Feb 27 2008 kwizart < kwizart at gmail.com > - 169.12-1
@@ -971,7 +974,7 @@ fi ||:
 * Thu May 25 2006 Thorsten Leemhuis <fedora AT leemhuis DOT info> - 1.0.8762-3
 - Obsolete old kmods
 
-* Thu May 24 2006 Thorsten Leemhuis <fedora AT leemhuis DOT info> - 1.0.8762-2
+* Thu May 25 2006 Thorsten Leemhuis <fedora AT leemhuis DOT info> - 1.0.8762-2
 - add missing defattr to files section for sub-package libs-32bit
 
 * Wed May 24 2006 Thorsten Leemhuis <fedora AT leemhuis DOT info> - 1.0.8762-1
