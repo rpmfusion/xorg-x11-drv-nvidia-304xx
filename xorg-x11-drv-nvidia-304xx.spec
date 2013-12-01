@@ -7,7 +7,7 @@
 
 Name:            xorg-x11-drv-nvidia-304xx
 Version:         304.108
-Release:         1%{?dist}
+Release:         2%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -17,6 +17,7 @@ Source0:         ftp://download.nvidia.com/XFree86/Linux-x86/%{version}/NVIDIA-L
 Source1:         ftp://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}.run
 Source2:         00-nvidia.conf
 Source3:         nvidia-xorg.conf
+Source5:         00-avoid-glamor.conf
 Source6:         blacklist-nouveau.conf
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -226,6 +227,7 @@ rm $RPM_BUILD_ROOT%{_nvidia_libdir}/libnvidia-{cfg,tls}.so
 #Install static driver dependant configuration files
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/X11/xorg.conf.d
 install -pm 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/X11/xorg.conf.d
+install -pm 0644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/X11/xorg.conf.d
 sed -i -e 's|@LIBDIR@|%{_libdir}|g' $RPM_BUILD_ROOT%{_sysconfdir}/X11/xorg.conf.d/00-nvidia.conf
 sed -i -e 's|nvidia|%{_nvidia_serie}|g' $RPM_BUILD_ROOT%{_sysconfdir}/X11/xorg.conf.d/00-nvidia.conf
 touch -r %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/X11/xorg.conf.d/00-nvidia.conf
@@ -339,6 +341,7 @@ fi ||:
 %dir %{_sysconfdir}/OpenCL/vendors
 %config %{_sysconfdir}/OpenCL/vendors/nvidia.icd
 %config %{_sysconfdir}/X11/xorg.conf.d/00-nvidia.conf
+%config %{_sysconfdir}/X11/xorg.conf.d/00-avoid-glamor.conf
 %config(noreplace) %{_prefix}/lib/modprobe.d/blacklist-nouveau.conf
 %config(noreplace) %{_sysconfdir}/X11/nvidia-xorg.conf
 %{_bindir}/nvidia-bug-report.sh
@@ -388,6 +391,9 @@ fi ||:
 
 
 %changelog
+* Sun Dec 01 2013 Leigh Scott <leigh123linux@googlemail.com> - 304.108-2
+- disable glamor module
+
 * Tue Aug 13 2013 Leigh Scott <leigh123linux@googlemail.com> - 304.108-1
 - Update to 304.108
 
