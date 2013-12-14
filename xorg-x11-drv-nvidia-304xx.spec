@@ -6,8 +6,8 @@
 %global	       __strip /bin/true
 
 Name:            xorg-x11-drv-nvidia-304xx
-Version:         304.116
-Release:         2%{?dist}
+Version:         304.117
+Release:         1%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -391,6 +391,9 @@ fi ||:
 
 
 %changelog
+* Sat Dec 14 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.117-1
+- Update to 304.117
+
 * Sun Dec 01 2013 Leigh Scott <leigh123linux@googlemail.com> - 304.116-2
 - disable glamor module
 
