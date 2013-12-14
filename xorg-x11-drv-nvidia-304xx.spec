@@ -213,6 +213,10 @@ for lib in $( find $RPM_BUILD_ROOT%{_libdir} -name lib\*.%{version} ) ; do
   ln -s ${lib##*/} ${lib%.%{version}}.1
 done
 
+# Own the real SONAME for libXvMCNVIDIA
+mv $RPM_BUILD_ROOT%{_nvidia_libdir}/libXvMCNVIDIA.so.1 \
+   $RPM_BUILD_ROOT%{_nvidia_libdir}/libXvMCNVIDIA_dynamic.so.1
+
 ln -s libOpenCL.so.1.0.0 $RPM_BUILD_ROOT%{_nvidia_libdir}/libOpenCL.so.1
 ln -s libOpenCL.so.1.0.0 $RPM_BUILD_ROOT%{_nvidia_libdir}/libOpenCL.so
 
@@ -393,6 +397,7 @@ fi ||:
 %changelog
 * Sat Dec 14 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.117-1
 - Update to 304.117
+- Own libXvMCNVIDIA_dynamic.so.1
 
 * Sun Dec 01 2013 Leigh Scott <leigh123linux@googlemail.com> - 304.116-2
 - disable glamor module
