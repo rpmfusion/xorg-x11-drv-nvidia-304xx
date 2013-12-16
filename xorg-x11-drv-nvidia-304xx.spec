@@ -366,9 +366,7 @@ fi ||:
 %dir %{_nvidia_xorgdir}
 %{_nvidia_xorgdir}/*.so*
 %{_libdir}/xorg/modules/drivers/nvidia_drv.so
-%if 0%{?fedora} < 20
 %{_libdir}/xorg/modules/%{_nvidia_serie}-%{version}
-%endif
 #/no_multilib
 %dir %{_datadir}/nvidia
 %{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
