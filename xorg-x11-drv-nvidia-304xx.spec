@@ -7,7 +7,7 @@
 
 Name:            xorg-x11-drv-nvidia-304xx
 Version:         304.117
-Release:         1%{?dist}
+Release:         2%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -249,6 +249,13 @@ desktop-file-install --vendor "" \
 ln -fs ../../%{_nvidia_serie}/xorg $RPM_BUILD_ROOT%{_libdir}/xorg/modules/%{_nvidia_serie}-%{version}
 %endif
 
+#install the NVIDIA supplied application profiles
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/nvidia
+install -p -m 0644 nvidia-application-profiles-%{version}-rc $RPM_BUILD_ROOT%{_datadir}/nvidia
+
+#Create the default nvidia config directory
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/nvidia
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -344,6 +351,7 @@ fi ||:
 %dir %{_sysconfdir}/OpenCL
 %dir %{_sysconfdir}/OpenCL/vendors
 %config %{_sysconfdir}/OpenCL/vendors/nvidia.icd
+%dir %{_sysconfdir}/nvidia
 %config %{_sysconfdir}/X11/xorg.conf.d/00-nvidia.conf
 %config %{_sysconfdir}/X11/xorg.conf.d/00-avoid-glamor.conf
 %config(noreplace) %{_prefix}/lib/modprobe.d/blacklist-nouveau.conf
@@ -362,6 +370,8 @@ fi ||:
 %{_libdir}/xorg/modules/%{_nvidia_serie}-%{version}
 %endif
 #/no_multilib
+%dir %{_datadir}/nvidia
+%{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
 %{_datadir}/applications/*nvidia-settings.desktop
 %{_datadir}/pixmaps/*.png
 %{_mandir}/man1/nvidia-smi.*
@@ -395,6 +405,9 @@ fi ||:
 
 
 %changelog
+* Mon Dec 16 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.117-2
+- Add system wide nvidia-application-profiles - rfbz#3057
+
 * Sat Dec 14 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.117-1
 - Update to 304.117
 - Own libXvMCNVIDIA_dynamic.so.1
