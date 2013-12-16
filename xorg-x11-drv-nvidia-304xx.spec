@@ -249,10 +249,6 @@ desktop-file-install --vendor "" \
 ln -fs ../../%{_nvidia_serie}/xorg $RPM_BUILD_ROOT%{_libdir}/xorg/modules/%{_nvidia_serie}-%{version}
 %endif
 
-#install the NVIDIA supplied application profiles
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/nvidia
-install -p -m 0644 nvidia-application-profiles-%{version}-rc $RPM_BUILD_ROOT%{_datadir}/nvidia
-
 #Create the default nvidia config directory
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/nvidia
 
@@ -368,8 +364,6 @@ fi ||:
 %{_libdir}/xorg/modules/drivers/nvidia_drv.so
 %{_libdir}/xorg/modules/%{_nvidia_serie}-%{version}
 #/no_multilib
-%dir %{_datadir}/nvidia
-%{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
 %{_datadir}/applications/*nvidia-settings.desktop
 %{_datadir}/pixmaps/*.png
 %{_mandir}/man1/nvidia-smi.*
@@ -404,7 +398,7 @@ fi ||:
 
 %changelog
 * Mon Dec 16 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.117-2
-- Add system wide nvidia-application-profiles - rfbz#3057
+- Use nvidia symlink for the glx.so
 
 * Sat Dec 14 2013 Nicolas Chauvet <kwizart@gmail.com> - 304.117-1
 - Update to 304.117
