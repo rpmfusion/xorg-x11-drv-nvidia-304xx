@@ -7,7 +7,7 @@
 
 Name:            xorg-x11-drv-nvidia-304xx
 Version:         304.117
-Release:         3%{?dist}
+Release:         4%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -245,9 +245,7 @@ desktop-file-install --vendor "" \
     nvidia-settings.desktop
 
 #Workaround for self made xorg.conf using a Files section.
-%if 0%{?fedora} < 20
 ln -fs ../../%{_nvidia_serie}/xorg $RPM_BUILD_ROOT%{_libdir}/xorg/modules/%{_nvidia_serie}-%{version}
-%endif
 
 #Create the default nvidia config directory
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/nvidia
@@ -397,6 +395,9 @@ fi ||:
 
 
 %changelog
+* Sat Dec 28 2013 Leigh Scott <leigh123linux@googlemail.com> - 304.117-4
+- remove conditionals
+
 * Fri Dec 27 2013 Leigh Scott <leigh123linux@googlemail.com> - 304.117-3
 - fix module path issue with alien msttcore-fonts package
 
