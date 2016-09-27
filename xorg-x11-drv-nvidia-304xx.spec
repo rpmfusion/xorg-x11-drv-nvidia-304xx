@@ -6,7 +6,7 @@
 %global	       __strip /bin/true
 
 Name:            xorg-x11-drv-nvidia-304xx
-Version:         304.131
+Version:         304.132
 Release:         1%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
@@ -395,6 +395,9 @@ fi ||:
 
 
 %changelog
+* Tue Sep 27 2016 Leigh Scott <leigh123linux@googlemail.com> - 304.132-1
+- Update to 304.132
+
 * Thu Nov 19 2015 Nicolas Chauvet <kwizart@gmail.com> - 304.131-1
 - Update to 304.131
 
