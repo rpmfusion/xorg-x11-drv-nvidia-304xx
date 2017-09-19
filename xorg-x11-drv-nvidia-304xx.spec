@@ -6,15 +6,15 @@
 %global	       __strip /bin/true
 
 Name:            xorg-x11-drv-nvidia-304xx
-Version:         304.135
+Version:         304.137
 Release:         1%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
 License:         Redistributable, no modification permitted
 URL:             http://www.nvidia.com/
-Source0:         ftp://download.nvidia.com/XFree86/Linux-x86/%{version}/NVIDIA-Linux-x86-%{version}.run
-Source1:         ftp://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}.run
+Source0:         https://download.nvidia.com/XFree86/Linux-x86/%{version}/NVIDIA-Linux-x86-%{version}.run
+Source1:         https://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}.run
 Source2:         99-nvidia.conf
 Source3:         nvidia-xorg.conf
 Source5:         00-avoid-glamor.conf
@@ -395,6 +395,10 @@ fi ||:
 
 
 %changelog
+* Tue Sep 19 2017 Leigh Scott <leigh123linux@googlemail.com> - 304.137-1
+- Update to 304.137
+- Fix source URL
+
 * Wed Feb 15 2017 Leigh Scott <leigh123linux@googlemail.com> - 304.135-1
 - Update to 304.135
 
