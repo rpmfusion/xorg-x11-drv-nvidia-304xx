@@ -7,7 +7,7 @@
 
 Name:            xorg-x11-drv-nvidia-304xx
 Version:         304.137
-Release:         1%{?dist}
+Release:         2%{?dist}
 Summary:         NVIDIA's 304xx serie proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -395,6 +395,9 @@ fi ||:
 
 
 %changelog
+* Fri Mar 02 2018 RPM Fusion Release Engineering <leigh123linux@googlemail.com> - 304.137-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Tue Sep 19 2017 Leigh Scott <leigh123linux@googlemail.com> - 304.137-1
 - Update to 304.137
 - Fix source URL
